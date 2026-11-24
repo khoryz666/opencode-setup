@@ -1,6 +1,4 @@
-.agents/
 __pycache__/
 *.py[cod]
-node_modules/
 service.json
 .DS_Store

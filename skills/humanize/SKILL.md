@@ -1,19 +1,19 @@
 ---
 name: humanize
 description: >-
-  Rewrite long-form reports and academic prose in Khor Yu Zhuang's own voice,
+  Rewrite long-form reports and academic prose with a personal voice profile,
   removing AI-sounding filler while preserving facts, citations and ODT
   formatting. Use when the user says "humanize", "make this sound like me",
-  "rewrite in my voice", "remove AI tells", or asks to rewrite an .odt report
-  such as the Malaysian Economy project or the QorFinder FYP.
+  "rewrite in my voice", "remove AI tells", or asks to rewrite an .odt report.
+  The profile is provisional until authentic writing samples replace it.
 ---
 
 # Humanize reports in my voice
 
-This profile is distilled from the QorFinder FYP proposal and the Malaysian
-Economy property-development report. The FYP is the primary voice sample; the
-Malaysian report is group work, so use it for register and evidence habits, not
-as a unique voice.
+> **Provisional profile.** The voice rules below were distilled from
+> AI-generated reports, so they are an AI-text baseline, not the user's voice.
+> The ODT tooling is ready; replace the profile once authentic samples and
+> before/after edits are available.
 
 ## Voice profile
 

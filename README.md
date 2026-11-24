@@ -1,6 +1,6 @@
 # opencode-setup
 
-My global OpenCode configuration: custom skills, one file-only agent, and the
+My global OpenCode configuration: custom skills and the
 [ponytail](https://github.com/DietrichGebert/ponytail) plugin.
 
 The repo root **is** the OpenCode config directory, so cloning it into place is
@@ -13,7 +13,7 @@ mkdir -p ~/.config
 git clone git@github.com:khoryz666/opencode-setup.git ~/.config/opencode
 ```
 
-That's it. OpenCode reads `opencode.json`, `agents/` and `skills/` from
+That's it. OpenCode reads `opencode.json` and `skills/` from
 `~/.config/opencode`. Start OpenCode, or press `/reload` if it is already
 running.
 
@@ -42,9 +42,7 @@ Credentials are not in git. On a fresh machine, connect a provider once with
 | Path | What it is |
 |------|------------|
 | `opencode.json` | Global config. Declares the ponytail plugin. |
-| `agents/parallel-agent.md` | File-only agent used by `parallel-agents`. |
 | `skills/` | Custom skills. One directory per skill, each with a `SKILL.md`. |
-| `skills/parallel-agents/config.json` | Default cheap model for parallel runs. Not the global model. |
 
 OpenCode already ships `docx`, `pdf`, `pptx`, `xlsx`, `skill-creator` and the
 other built-in skills, so this repo does not duplicate them. It only adds what
@@ -52,34 +50,26 @@ OpenCode does not have.
 
 ## Skills
 
-**Workflow**
+**Git**
 - **`commit`** — one-thing, one-line conventional commits gated on the project's
   checks, including applying review feedback one item at a time.
-- **`release`** — push, watch CI until green, write release notes.
-- **`ui-polish`** — make a UI clean and obvious.
 
 **Writing**
 - **`write-docs`** — short, plain, purpose-first docs, plus keeping docs, plans
   and code aligned.
-- **`explain-plainly`** — explain anything simply, with talking points and a
-  learning path.
-- **`humanize`** — rewrite reports and prose in my academic voice, with an ODT
-  workflow that preserves citations and formatting.
-
-**Delegation**
-- **`parallel-agents`** — fan out cheap coding agents in parallel while you review.
+- **`humanize`** — rewrite reports and prose through a voice profile and an ODT
+  workflow that preserves citations and formatting. The profile is provisional.
 
 **Visuals**
 - **`drawio`** — diagrams, flowcharts, architecture, mockups, plus print posters
   and infographics, exported to `.drawio`, PNG, SVG or PDF.
 
-`humanize` is distilled from the QorFinder FYP proposal and the Malaysian Economy
-property-development report. The ODT scripts use only the Python standard
-library.
-
 `drawio` is adapted from [jgraph/drawio-mcp](https://github.com/jgraph/drawio-mcp)
 (Apache 2.0, © 2025 JGraph Ltd) for OpenCode, Linux/macOS and Python helpers.
 See `skills/drawio/LICENSE.txt` and `skills/drawio/NOTICE`.
+
+The `humanize` ODT scripts use only the Python standard library. Its voice
+profile is still provisional until it is rebuilt from authentic writing samples.
 
 ## How to use it
 
@@ -89,12 +79,13 @@ one, mention it as `@skill-id` or by name.
 Examples:
 
 - "Commit this as one focused commit." → `commit`
+- "Write a README for this project." → `write-docs`
+- "Check whether the docs and code still agree." → `write-docs`
+- "Humanize this report in my voice." → `humanize`
+- "Rewrite `~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt` in my voice." → `humanize`
 - "Make an A1 conference poster about the project, portrait, and export a print PDF." → `drawio`
 - "Turn these notes into a one-page infographic." → `drawio`
 - "Draw the auth flow and export it as SVG." → `drawio`
-- "Fan out these three independent tasks to the cheap model." → `parallel-agents`
-- "Humanize this report in my voice." → `humanize`
-- "Rewrite `~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt` in my voice." → `humanize`
 
 The ponytail plugin adds the `/ponytail`, `/ponytail-review`, `/ponytail-audit`,
 `/ponytail-debt`, `/ponytail-gain` and `/ponytail-help` commands. It styles every
@@ -132,9 +123,9 @@ Poster/infographic prompts work best with a format, orientation and audience:
 
 ## Humanizing ODT reports
 
-`humanize` rewrites in the voice distilled from the QorFinder FYP and the
-Malaysian Economy report. It edits the report through a Markdown intermediate so
-paragraph styles, bold/italic spans and citations survive.
+`humanize` edits a report through a Markdown intermediate so paragraph styles,
+bold/italic spans and citations survive. The voice profile is provisional; the
+ODT tooling is ready and the profile can be rebuilt from authentic samples.
 
 ```bash
 # 1. Extract to an editable Markdown file
@@ -162,26 +153,12 @@ tables, references, code, metadata and short paragraphs out of the rewrite
 targets. Formatting spans appear as `{{rN}}…{{/rN}}` markers; keep them when
 rewriting. A dropped marker or an edit to a read-only block stops the apply step.
 
-Refresh the voice profile with more of your writing:
+Refresh the profile with authentic writing samples:
 
 ```bash
 python3 ~/.config/opencode/skills/humanize/scripts/style_profile.py \
   report1.odt report2.odt
 ```
-
-## parallel-agents (the big one)
-
-You plan and review; cheap models write the code in parallel, so their output
-never fills your context window. Write one brief per task, then launch:
-
-```bash
-~/.config/opencode/skills/parallel-agents/scripts/launch.sh \
-  --repo /abs/path/to/repo --names topics,questions,import
-```
-
-Each agent writes its files and a `.agents/runs/<name>.done` marker. You review
-the diffs, test, and commit. The default model is set in
-`skills/parallel-agents/config.json`.
 
 ## Add a skill
 
@@ -204,7 +181,7 @@ session first, or run `opencode` with an empty config and ask for the skill IDs.
 
 - Linux or macOS.
 - OpenCode installed and connected to a provider (`opencode auth login`).
-- `git`, `bash` and `python3`.
+- `git` and `python3`.
 - Optional: draw.io Desktop for Mermaid conversion, layouts and image export.
 - Optional: LibreOffice for `odt_verify.py --pdf` and for opening the results.
 

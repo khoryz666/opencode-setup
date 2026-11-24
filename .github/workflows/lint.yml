@@ -11,13 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: shellcheck
-        run: shellcheck -x skills/*/scripts/*.sh
-
       - name: validate JSON
-        run: |
-          python3 -m json.tool opencode.json > /dev/null
-          python3 -m json.tool skills/parallel-agents/config.json > /dev/null
+        run: python3 -m json.tool opencode.json > /dev/null
 
       - name: compile and self-test Python
         run: |
@@ -27,7 +22,6 @@ jobs:
 
       - name: check layout
         run: |
-          test -f agents/parallel-agent.md
           test -f opencode.json
           for skill in skills/*/; do
             test -f "$skill/SKILL.md" || { echo "missing SKILL.md: $skill"; exit 1; }
