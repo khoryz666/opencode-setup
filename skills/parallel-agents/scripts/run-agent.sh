@@ -8,7 +8,7 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1090,SC1091  # lib.sh is resolved via $here at runtime
 source "$here/lib.sh"
 
-repo=""; brief=""; marker=""; log=""; model=""; runner=""; title="parallel-agent"
+repo=""; brief=""; marker=""; log=""; model=""; title="parallel-agent"
 while [ $# -gt 0 ]; do
   case "$1" in
     --repo)   repo="$2";   shift 2 ;;
@@ -16,7 +16,6 @@ while [ $# -gt 0 ]; do
     --marker) marker="$2"; shift 2 ;;
     --log)    log="$2";    shift 2 ;;
     --model)  model="$2";  shift 2 ;;
-    --runner) runner="$2"; shift 2 ;;
     --title)  title="$2";  shift 2 ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
   esac
@@ -35,12 +34,8 @@ rm -f "$marker_abs" "$log"
 code=1
 trap 'echo "RUN_DONE exit=$code at $(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$marker_abs"' EXIT
 
-runner="$(resolve_runner "$runner")"
-case "$runner" in
-  claude|opencode) ;;
-  *) echo "run-agent: no runner found; install 'claude' or 'opencode'" >&2; exit 2 ;;
-esac
-model="${model:-$(default_model "$runner")}"
+command -v opencode >/dev/null 2>&1 || { echo "run-agent: opencode not found on PATH" >&2; exit 2; }
+model="${model:-$(default_model)}"
 
 cd "$repo" || { echo "run-agent: cannot cd to $repo" >&2; exit 1; }
 
@@ -50,20 +45,10 @@ shell, package-manager, git, or test commands, and do not commit. Mirror the \
 existing modules and conventions already in this repo. When finished, print a \
 short list of files created and any TODOs, then print DONE on its own line."
 
-echo "=== $title :: $brief (runner: $runner, model: $model) ==="
+echo "=== $title :: $brief (model: $model) ==="
 
-case "$runner" in
-  claude)
-    claude -p "$prompt" --model "$model" \
-      --permission-mode acceptEdits --disallowedTools Bash \
-      --output-format stream-json --verbose 2>&1 | tee "$log"
-    code=${PIPESTATUS[0]}
-    ;;
-  opencode)
-    opencode run "$prompt" --agent "$OPENCODE_AGENT" --model "$model" --auto 2>&1 | tee "$log"
-    code=${PIPESTATUS[0]}
-    ;;
-esac
+opencode run "$prompt" --agent "$OPENCODE_AGENT" --model "$model" --auto 2>&1 | tee "$log"
+code=${PIPESTATUS[0]}
 
 echo
 echo "=== DONE: $title (exit=$code). Files written; reviewer will test + commit. ==="

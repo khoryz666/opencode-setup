@@ -11,17 +11,16 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$here/lib.sh"
 runner_script="$here/run-agent.sh"
 
-repo=""; names=""; model=""; runner=""; tmux_mode=0; dry_run=0
+repo=""; names=""; model=""; tmux_mode=0; dry_run=0
 need_val() { [ $# -ge 2 ] || { echo "launch: $1 needs a value" >&2; exit 2; }; }
 while [ $# -gt 0 ]; do
   case "$1" in
-    --repo|--names|--model|--runner) need_val "$@" ;;
+    --repo|--names|--model) need_val "$@" ;;
   esac
   case "$1" in
     --repo)    repo="$2";    shift 2 ;;
     --names)   names="$2";   shift 2 ;;
     --model)   model="$2";   shift 2 ;;
-    --runner)  runner="$2";  shift 2 ;;
     --tmux)    tmux_mode=1;  shift ;;
     --dry-run) dry_run=1;    shift ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
@@ -38,12 +37,8 @@ if [ "$tmux_mode" -eq 1 ] && { [ -z "${TMUX:-}" ] || ! command -v tmux >/dev/nul
   tmux_mode=0
 fi
 
-runner="$(resolve_runner "$runner")"
-case "$runner" in
-  claude|opencode) ;;
-  *) echo "launch: no runner found; install 'claude' or 'opencode'" >&2; exit 2 ;;
-esac
-model="${model:-$(default_model "$runner")}"
+command -v opencode >/dev/null 2>&1 || { echo "launch: opencode not found on PATH" >&2; exit 2; }
+model="${model:-$(default_model)}"
 
 runs_dir="$repo/.agents/runs"
 mkdir -p "$runs_dir"
@@ -67,7 +62,7 @@ for name in "${name_list[@]}"; do
   title="$model-$name"
 
   args=(bash "$runner_script" --repo "$repo" --brief "$brief" --marker "$marker" \
-        --log "$log" --model "$model" --runner "$runner" --title "$title")
+        --log "$log" --model "$model" --title "$title")
 
   if [ "$dry_run" -eq 1 ]; then
     echo "[dry-run] $title: ${args[*]}"

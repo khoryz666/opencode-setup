@@ -1,33 +1,32 @@
-# agents-setup
+# opencode-setup
 
-My personal setup for AI coding agents — dotfiles, but for the skills and config I
+My personal setup for OpenCode — dotfiles, but for the skills and config I
 carry across machines.
 
 A **skill** is a Markdown file that teaches an agent how to do one thing well
 (commit, write docs, fan out parallel agents). This repo collects mine, and
-`install.sh` (Linux/macOS) or `install.ps1` (Windows) links them into Claude Code
-and OpenCode so both pick them up automatically.
+`install.sh` (Linux/macOS) or `install.ps1` (Windows) links them into OpenCode so
+it picks them up automatically.
 
 ## Install
 
 Linux / macOS:
 
 ```bash
-git clone git@github.com:khoryz666/agents-setup.git
-cd agents-setup
+git clone git@github.com:khoryz666/opencode-setup.git
+cd opencode-setup
 ./install.sh
 ```
 
 Windows (PowerShell):
 
 ```powershell
-git clone git@github.com:khoryz666/agents-setup.git
-cd agents-setup
+git clone git@github.com:khoryz666/opencode-setup.git
+cd opencode-setup
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-That's it. The installer links every skill into `~/.claude/skills` and
-`~/.config/opencode/skills`. It's safe to re-run, and because it uses links,
+That's it. The installer links every skill into `~/.config/opencode/skills`. It's safe to re-run, and because it uses links,
 `git pull` updates the skills in place.
 
 ## What's inside
@@ -47,8 +46,7 @@ description. No extra command needed.
 
 ## Add a skill
 
-Drop in a `skills/<name>/SKILL.md` folder, then re-run `./install.sh`. Claude Code
-and OpenCode skills use the same format, so they work as-is.
+Drop in a `skills/<name>/SKILL.md` folder, then re-run `./install.sh`.
 
 ```markdown
 ---
@@ -77,12 +75,11 @@ powershell -ExecutionPolicy Bypass -File .\skills\parallel-agents\scripts\launch
 ```
 
 Each agent writes its files and a `.agents/runs/<name>.done` marker. You review the
-diffs, test, and commit. Models are set in `config.json`.
+diffs, test, and commit. The default model is set in `config.json`.
 
 ## Prerequisites
 
-Linux, macOS, or Windows (PowerShell), with `claude` and/or `opencode` installed
-and logged in.
+Linux, macOS, or Windows (PowerShell), with `opencode` installed and logged in.
 
 ## License
 

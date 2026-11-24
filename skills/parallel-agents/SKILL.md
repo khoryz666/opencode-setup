@@ -1,17 +1,16 @@
 ---
 name: parallel-agents
 description: >-
-  Offload implementation to one or more cheaper models running in detached host
-  processes while the orchestrator (DeepSeek V4 Pro on OpenCode, or Claude on
-  Claude Code) plans, reviews, tests, and commits. Use this whenever the user
-  wants to save tokens by delegating coding to a cheaper model, run work across
+  Offload implementation to one or more cheaper models running in detached
+  OpenCode processes while the orchestrator plans, reviews, tests, and commits.
+  Use this whenever the user wants to save tokens by delegating coding to a cheaper model, run work across
   multiple agents in parallel / "fan out" a batch of independent tasks, or watch
   agents build in real terminal windows with code appearing in their editor.
   Trigger on "offload to (model)", "use a cheaper model", "use a free model",
   "parallel agents", "fan out", "split this up", "spawn N agents", even when the
   user does not name the skill or a model explicitly.
-  Linux/macOS (bash) or Windows (PowerShell), with the claude or opencode CLI on
-  the host; adapt the paths/test command for your stack.
+  Linux/macOS (bash) or Windows (PowerShell), with the opencode CLI on the host;
+  adapt the paths/test command for your stack.
 ---
 
 # parallel-agents
@@ -26,28 +25,16 @@ into one parallel batch.
 ## The model
 - **Orchestrator (you):** decompose the work, write one brief per task, launch the
   agents, then review every diff, run the project's formatter + tests, and commit.
-  Model roles are set deterministically in `../../config.json`: orchestrator is
-  **DeepSeek V4 Pro** on OpenCode and **Claude Opus 5.5** on Claude Code.
 - **Agent (coding model):** reads its brief and writes files. It is fenced to file
   read/write only — no shell, git, or tests — so it cannot commit or run anything
   risky. Verification and commits are always the orchestrator's job.
 
 ### Choosing the agent model (`--model`)
-`launch.sh` picks a default per runner from `../../config.json` (`models.<runner>.agent`);
-pass `--model` to override.
-
-- **Claude Code runner** (default `claude-sonnet-5-5`): the coding tier is **Sonnet**
-  (default) or **Haiku** — pass `--model haiku` (or `claude-haiku-5-5`) for the
-  cheapest runs. Haiku handles well-specified, mechanical work on the first pass —
-  UI screens, CRUD forms, list/grid views, a controller that mirrors a sibling.
-  Reach for Sonnet when the task carries more judgement. The orchestrator stays on
-  Opus 5.5 regardless. Either way, the quality bar is the brief plus your review,
-  not the model.
-- **OpenCode runner** (default `opencode/deepseek-v4.1-flash-free`, $0): use any
-  free model. `opencode/deepseek-v4.1-flash-free` is the default cheap choice;
-  `opencode/flint-40b-free` is the stronger free option for tasks with more
-  judgement. Run `opencode models` to see the current free list. Change the default
-  in `../../config.json` → `models.opencode.agent`.
+The default comes from `../../config.json` (`model`); pass `--model` to override.
+Use any free model: `opencode/deepseek-v4.1-flash-free` is the default cheap choice;
+`opencode/flint-40b-free` is the stronger free option for tasks with more
+judgement. Run `opencode models` to see the current free list. The quality bar is
+the brief plus your review, not the model.
 
 ## Why the mechanics are the way they are
 - The desktop app's Terminal panel auto-cancels any command that doesn't return
@@ -63,17 +50,14 @@ pass `--model` to override.
 
 ## Prerequisites (check once)
 Run `scripts/check-cli.sh` (Linux/macOS) or `scripts/check-cli.ps1` (Windows). It
-confirms the host has `claude` and/or `opencode` and prints their versions. Install
-the missing CLI(s):
+confirms the host has `opencode` and prints its version. Install it with:
 
 ```bash
-npm install -g @anthropic-ai/claude-code   # Claude Code
-curl -fsSL https://opencode.ai/install | bash   # OpenCode
+curl -fsSL https://opencode.ai/install | bash
 ```
 
 Then run `../../install.sh` (or `../../install.ps1` on Windows) once to link the skill
-(and the OpenCode file-only agent) into the global config directories, and to apply
-the `attribution` from `../../config.json` to `~/.claude/settings.json`. If a run
+and the file-only `parallel-agent` into `~/.config/opencode`. If a run
 later prints "Not logged in", open the CLI interactively once and complete login.
 
 ## Workflow
@@ -93,15 +77,13 @@ brief IS the prompt — the user can open it to see exactly what each agent was 
 
 ### 3. Launch all agents in parallel
 ```
-<skill>/scripts/launch.sh --repo <REPO_ROOT> --names topics,questions,import [--runner opencode] [--model ...]
+<skill>/scripts/launch.sh --repo <REPO_ROOT> --names topics,questions,import [--model ...]
 ```
 On Windows, use the PowerShell counterpart:
 ```
-powershell -ExecutionPolicy Bypass -File <skill>/scripts/launch.ps1 -Repo <REPO_ROOT> -Names topics,questions,import [-Runner opencode] [-Model ...]
+powershell -ExecutionPolicy Bypass -File <skill>/scripts/launch.ps1 -Repo <REPO_ROOT> -Names topics,questions,import [-Model ...]
 ```
-`--runner` / `-Runner` defaults to auto-detect (`claude` if present, else `opencode`);
-force it with `claude` or `opencode`. `--model` / `-Model` defaults per runner (see
-above). Add `--tmux` (bash) to open one tmux window per agent, or `-Tmux`
+`--model` / `-Model` defaults to the config model (see above). Add `--tmux` (bash) to open one tmux window per agent, or `-Tmux`
 (PowerShell) to open one visible console window per agent, instead of detached
 background processes. The call returns at once — do not wait on it in the panel.
 
@@ -124,8 +106,7 @@ one-line message, and push. Never let an agent's output reach a commit unreviewe
 or untested.
 
 ## Guardrails
-- Agents are file-only: the Claude runner uses `--disallowedTools Bash`; the
-  OpenCode runner selects the `parallel-agent` agent, which denies `shell`,
+- Agents are file-only: each run selects the `parallel-agent` agent, which denies `shell`,
   `subagent`, and `execute`. Keep it that way.
 - Keep architecture, security-sensitive code, and tricky trade-offs on the
   orchestrator. The cheap model is for well-specified, mechanical implementation.
@@ -136,9 +117,9 @@ or untested.
 ## Files
 - `scripts/launch.sh` / `scripts/launch.ps1` — fan out N agents in parallel (one detached process each).
 - `scripts/run-agent.sh` / `scripts/run-agent.ps1` — a single agent (launched by launch; not called directly).
-- `scripts/check-cli.sh` / `scripts/check-cli.ps1` — prerequisite check for `claude` / `opencode`.
-- `scripts/lib.sh` / `scripts/lib.ps1` — shared helpers (config lookup, runner resolution).
+- `scripts/check-cli.sh` / `scripts/check-cli.ps1` — prerequisite check for `opencode`.
+- `scripts/lib.sh` / `scripts/lib.ps1` — shared helpers (config lookup, default model).
 - `opencode/agents/parallel-agent.md` — the OpenCode file-only agent definition.
 - `references/brief-template.md` — the brief format and how to split tasks for parallelism.
 - `../../install.sh` / `../../install.ps1` (repo root) — link this skill and its OpenCode agent into global config.
-- `../../config.json` (repo root) — deterministic model and attribution settings.
+- `../../config.json` (repo root) — default agent model.

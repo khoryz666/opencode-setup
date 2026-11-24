@@ -2,7 +2,6 @@ param(
     [string]$Repo,     # repo root (absolute path)
     [string]$Names,    # comma/space separated; one name per agent; briefs at .agents/briefs/<name>.md
     [string]$Model,    # agent (coding) model override
-    [string]$Runner,   # claude|opencode (auto-detect if empty)
     [switch]$Tmux,     # open one visible console window per agent instead of hidden detached
     [switch]$DryRun    # print the command that would launch each agent, without running it
 )
@@ -26,12 +25,11 @@ if (-not (Test-Path -LiteralPath $Repo -PathType Container)) {
 }
 $Repo = (Resolve-Path -LiteralPath $Repo).Path
 
-$runner = resolve_runner $Runner
-if ($runner -notin @('claude', 'opencode')) {
-    Write-Host "launch: no runner found; install 'claude' or 'opencode'" -ForegroundColor Red
+if (-not (resolve_opencode)) {
+    Write-Host 'launch: opencode not found on PATH' -ForegroundColor Red
     exit 2
 }
-if (-not $Model) { $Model = default_model $runner }
+if (-not $Model) { $Model = default_model }
 
 $runsDir = Join-Path $Repo '.agents\runs'
 New-Item -ItemType Directory -Force -Path $runsDir | Out-Null
@@ -59,7 +57,7 @@ foreach ($name in $nameList) {
         $cmdline = @(
             'powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $runnerScript,
             '-Repo', $Repo, '-Brief', $brief, '-Marker', $marker, '-Log', $log,
-            '-Model', $Model, '-Runner', $runner, '-Title', $title
+            '-Model', $Model, '-Title', $title
         ) -join ' '
         Write-Host "[dry-run] $title`: $cmdline"
         $count++
@@ -76,7 +74,7 @@ foreach ($name in $nameList) {
             '/c', 'start', '""', '/D', $Repo, 'powershell.exe',
             '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $runnerScript,
             '-Repo', $Repo, '-Brief', $brief, '-Marker', $marker, '-Log', $log,
-            '-Model', $Model, '-Runner', $runner, '-Title', $title
+            '-Model', $Model, '-Title', $title
         )
     } else {
         # Hidden, fully detached process: survives the parent terminal's Ctrl-C /
@@ -84,7 +82,7 @@ foreach ($name in $nameList) {
         Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
             '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $runnerScript,
             '-Repo', $Repo, '-Brief', $brief, '-Marker', $marker, '-Log', $log,
-            '-Model', $Model, '-Runner', $runner, '-Title', $title
+            '-Model', $Model, '-Title', $title
         )
     }
     Write-Host "launched: $title  (brief: $brief)"
