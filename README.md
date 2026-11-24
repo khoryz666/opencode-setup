@@ -10,8 +10,8 @@ mkdir -p ~/.config
 git clone git@github.com:khoryz666/opencode-setup.git ~/.config/opencode
 ```
 
-OpenCode reads `opencode.json`, `agents/`, `commands/`, `skills/` and `learned/`
-from `~/.config/opencode`. Press `/reload` if it is already running.
+OpenCode reads `opencode.json`, `cli.json`, `agents/`, `commands/`, `skills/` and
+`learned/` from `~/.config/opencode`. Press `/reload` if it is already running.
 
 Do **not** clone into `~/.opencode`; that is the binary directory.
 
@@ -30,6 +30,7 @@ Update with `git -C ~/.config/opencode pull`. Credentials are not in git; run
 | Path | What |
 |------|------|
 | `opencode.json` | Formatter, snapshots, compaction, permissions, ponytail. |
+| `cli.json` | Terminal theme: GitHub. |
 | `agents/tutor.md` | Tutor agent: explains and reviews, never edits. |
 | `commands/learn.md` | `/learn <task>` — one step at a time. |
 | `skills/` | Custom skills. |

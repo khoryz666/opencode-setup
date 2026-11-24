@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: validate JSON
-        run: python3 -m json.tool opencode.json > /dev/null
+        run: |
+          python3 -m json.tool opencode.json > /dev/null
+          python3 -m json.tool cli.json > /dev/null
 
       - name: compile and self-test Python
         run: |
@@ -23,6 +25,7 @@ jobs:
       - name: check layout
         run: |
           test -f opencode.json
+          test -f cli.json
           test -f agents/tutor.md
           test -f commands/learn.md
           test -f learned/preferences.md
