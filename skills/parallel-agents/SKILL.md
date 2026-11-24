@@ -9,8 +9,8 @@ description: >-
   Trigger on "offload to (model)", "use a cheaper model", "use a free model",
   "parallel agents", "fan out", "split this up", "spawn N agents", even when the
   user does not name the skill or a model explicitly.
-  Linux/macOS (bash) or Windows (PowerShell), with the opencode CLI on the host;
-  adapt the paths/test command for your stack.
+  Linux/macOS with bash, python3, and the opencode CLI on the host; adapt the
+  paths/test command for your stack.
 ---
 
 # parallel-agents
@@ -30,7 +30,7 @@ into one parallel batch.
   risky. Verification and commits are always the orchestrator's job.
 
 ### Choosing the agent model (`--model`)
-The default comes from `../../config.json` (`model`); pass `--model` to override.
+The default comes from this skill's `config.json` (`model`); pass `--model` to override.
 Use any free model: `opencode/deepseek-v4.1-flash-free` is the default cheap choice;
 `opencode/flint-40b-free` is the stronger free option for tasks with more
 judgement. Run `opencode models` to see the current free list. The quality bar is
@@ -39,25 +39,24 @@ the brief plus your review, not the model.
 ## Why the mechanics are the way they are
 - The desktop app's Terminal panel auto-cancels any command that doesn't return
   within ~2s (it sends Ctrl-C). So every long run is launched **detached** — via
-  `setsid` (or a `tmux` window with `--tmux`) on Linux/macOS, and via a hidden
-  `Start-Process` (or a visible console window with `-Tmux`) on Windows. The launch
-  call returns instantly and the agent is immune. Watch a run with
-  `tail -f .agents/runs/<name>.log` (or read the `.log` file).
+  `setsid` (or a `tmux` window with `--tmux`). The launch call returns instantly
+  and the agent is immune. Watch a run with `tail -f .agents/runs/<name>.log`
+  (or read the `.log` file).
 - The **repo working directory is shared** between the orchestrator's shell and
   the host, so files an agent writes are visible to your review tools.
 - Agents are file-only (see below), so they can't run the project's tests or
   commit. Verification stays in one place — you.
 
 ## Prerequisites (check once)
-Run `scripts/check-cli.sh` (Linux/macOS) or `scripts/check-cli.ps1` (Windows). It
-confirms the host has `opencode` and prints its version. Install it with:
+Run `scripts/check-cli.sh`. It confirms the host has `opencode` and that the
+file-only `parallel-agent` is in `~/.config/opencode/agents`. Install the CLI with:
 
 ```bash
 curl -fsSL https://opencode.ai/install | bash
 ```
 
-Then run `../../install.sh` (or `../../install.ps1` on Windows) once to link the skill
-and the file-only `parallel-agent` into `~/.config/opencode`. If a run
+This repo is the OpenCode config directory: clone it to `~/.config/opencode`, and
+OpenCode loads the skill and `agents/parallel-agent.md` automatically. If a run
 later prints "Not logged in", open the CLI interactively once and complete login.
 
 ## Workflow
@@ -70,7 +69,8 @@ run them sequentially — a shared registration file is best edited by you after
 agents finish. Give each task a short `name` (`topics`, `questions`, `import`).
 
 ### 2. Write one brief per task
-Write each to `.agents/briefs/<name>.md` (gitignored). Follow
+Write each to `.agents/briefs/<name>.md`. If the target repo doesn't already
+ignore it, add `.agents/` to its `.gitignore` first. Follow
 `references/brief-template.md`: concrete field lists, the sibling files to mirror
 for conventions, the tests to write, and the "only read/write files" rules. The
 brief IS the prompt — the user can open it to see exactly what each agent was told.
@@ -79,13 +79,9 @@ brief IS the prompt — the user can open it to see exactly what each agent was 
 ```
 <skill>/scripts/launch.sh --repo <REPO_ROOT> --names topics,questions,import [--model ...]
 ```
-On Windows, use the PowerShell counterpart:
-```
-powershell -ExecutionPolicy Bypass -File <skill>/scripts/launch.ps1 -Repo <REPO_ROOT> -Names topics,questions,import [-Model ...]
-```
-`--model` / `-Model` defaults to the config model (see above). Add `--tmux` (bash) to open one tmux window per agent, or `-Tmux`
-(PowerShell) to open one visible console window per agent, instead of detached
-background processes. The call returns at once — do not wait on it in the panel.
+`--model` defaults to the config model (see above). Add `--tmux` to open one tmux
+window per agent instead of detached background processes. The call returns at
+once — do not wait on it in the panel.
 
 ### 4. Wait for all of them to finish
 Each agent writes `.agents/runs/<name>.done` when it exits. Wait with a background
@@ -115,11 +111,10 @@ or untested.
   `.agents/briefs/`, markers and transcripts in `.agents/runs/`.
 
 ## Files
-- `scripts/launch.sh` / `scripts/launch.ps1` — fan out N agents in parallel (one detached process each).
-- `scripts/run-agent.sh` / `scripts/run-agent.ps1` — a single agent (launched by launch; not called directly).
-- `scripts/check-cli.sh` / `scripts/check-cli.ps1` — prerequisite check for `opencode`.
-- `scripts/lib.sh` / `scripts/lib.ps1` — shared helpers (config lookup, default model).
-- `opencode/agents/parallel-agent.md` — the OpenCode file-only agent definition.
+- `scripts/launch.sh` — fan out N agents in parallel (one detached process each).
+- `scripts/run-agent.sh` — a single agent (launched by launch; not called directly).
+- `scripts/check-cli.sh` — prerequisite check for `opencode`.
+- `scripts/lib.sh` — shared helpers (config lookup, default model).
+- `config.json` — default agent model.
 - `references/brief-template.md` — the brief format and how to split tasks for parallelism.
-- `../../install.sh` / `../../install.ps1` (repo root) — link this skill and its OpenCode agent into global config.
-- `../../config.json` (repo root) — default agent model.
+- `../../agents/parallel-agent.md` (repo root) — the OpenCode file-only agent definition.

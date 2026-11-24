@@ -1,0 +1,9 @@
+This skill is adapted from jgraph/drawio-mcp
+(https://github.com/jgraph/drawio-mcp), Copyright 2025 JGraph Ltd,
+licensed under the Apache License, Version 2.0.
+
+Changes for this repository:
+- Rewritten for OpenCode and Linux/macOS.
+- Node.js helpers replaced with Python scripts.
+- Windows and WSL-specific instructions removed.
+- Poster and infographic guidance added.

@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # Shared helpers for the parallel-agents skill. Sourced by the other scripts.
 
-# Resolve locations relative to this file. `pwd -P` follows the install symlink,
-# so REPO_ROOT is the real clone directory even when invoked via ~/.config/opencode/skills.
+# Resolve locations relative to this file. `pwd -P` follows symlinks, so this
+# works both from a clone and from ~/.config/opencode/skills.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd -P)"
-REPO_ROOT="$(cd "$SKILL_DIR/../.." && pwd -P)"
-CONFIG_FILE="$REPO_ROOT/config.json"
+CONFIG_FILE="$SKILL_DIR/config.json"
 
 # Fallback default, used only if config.json / python3 are unavailable.
 DEFAULT_MODEL="opencode/deepseek-v4.1-flash-free"
 
-# The file-only OpenCode agent each run selects (installed by install.sh).
+# The file-only OpenCode agent each run selects. It ships at the repo root
+# (agents/parallel-agent.md); when this repo is cloned to ~/.config/opencode,
+# OpenCode loads it automatically.
 # Exported because run-agent.sh and check-cli.sh read it after sourcing this file.
 export OPENCODE_AGENT="parallel-agent"
 

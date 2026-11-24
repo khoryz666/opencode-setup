@@ -9,7 +9,11 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$here/lib.sh"
 
 repo=""; brief=""; marker=""; log=""; model=""; title="parallel-agent"
+need_val() { [ $# -ge 2 ] || { echo "run-agent: $1 needs a value" >&2; exit 2; }; }
 while [ $# -gt 0 ]; do
+  case "$1" in
+    --repo|--brief|--marker|--log|--model|--title) need_val "$@" ;;
+  esac
   case "$1" in
     --repo)   repo="$2";   shift 2 ;;
     --brief)  brief="$2";  shift 2 ;;

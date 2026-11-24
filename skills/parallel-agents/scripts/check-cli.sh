@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# Prerequisite check: is the opencode CLI installed on this host?
-# (Login can't be checked non-interactively; see the hint printed at the end.)
+# Prerequisite check: is the opencode CLI installed and is the file-only agent
+# in the global config? (Login can't be checked non-interactively; see the hint
+# printed at the end.)
 set -uo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1090,SC1091  # lib.sh is resolved via $here at runtime
 source "$here/lib.sh"
 
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
 status=0
+
 if command -v opencode >/dev/null 2>&1; then
   printf 'opencode: %s\n' "$(command -v opencode)"
   opencode --version 2>&1 | sed 's/^/          /' || true
@@ -17,16 +20,18 @@ else
   status=1
 fi
 
-agent_file="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/agents/${OPENCODE_AGENT}.md"
+agent_file="$config_dir/agents/${OPENCODE_AGENT}.md"
 if [ -f "$agent_file" ]; then
   echo "opencode agent: $agent_file"
 else
-  color_yellow "opencode agent '$OPENCODE_AGENT' not installed (run $REPO_ROOT/install.sh)"
+  color_yellow "opencode agent '$OPENCODE_AGENT' not found at $agent_file"
+  echo "  clone this repo to $config_dir so OpenCode loads agents/ automatically"
+  status=1
 fi
 
 echo
 if [ -f "$CONFIG_FILE" ]; then
-  echo "config: $CONFIG_FILE"
+  echo "skill config: $CONFIG_FILE"
   echo "  agent model: $(default_model)"
 else
   color_yellow "config.json not found (expected at $CONFIG_FILE)"

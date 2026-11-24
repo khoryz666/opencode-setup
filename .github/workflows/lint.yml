@@ -6,32 +6,39 @@ on:
   pull_request:
 
 jobs:
-  shellcheck:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: shellcheck
-        run: shellcheck -x install.sh skills/*/scripts/*.sh
-      - name: validate config.json
-        run: python3 -m json.tool config.json > /dev/null
 
-  psscriptanalyzer:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install PSScriptAnalyzer
-        shell: pwsh
+      - name: shellcheck
+        run: shellcheck -x skills/*/scripts/*.sh
+
+      - name: validate JSON
         run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
-      - name: Analyze PowerShell
-        shell: pwsh
+          python3 -m json.tool opencode.json > /dev/null
+          python3 -m json.tool skills/parallel-agents/config.json > /dev/null
+
+      - name: compile and self-test Python
         run: |
-          # Write-Host is intentional here (interactive CLI scripts), and OPENCODE_AGENT
-          # is an export consumed by the scripts that dot-source lib.ps1.
-          $issues = Invoke-ScriptAnalyzer -Path . -Recurse `
-            -ExcludeRule PSAvoidUsingWriteHost, PSUseDeclaredVarsMoreThanAssignments
-          if ($issues) {
-            $issues | Format-Table -AutoSize
-            exit 1
-          }
+          python3 -m compileall -q skills
+          python3 skills/drawio/scripts/selftest.py
+
+      - name: check layout
+        run: |
+          test -f agents/parallel-agent.md
+          test -f opencode.json
+          for skill in skills/*/; do
+            test -f "$skill/SKILL.md" || { echo "missing SKILL.md: $skill"; exit 1; }
+          done
+          if find . -name '*.ps1' | grep -q .; then
+            echo "PowerShell scripts are not allowed"; exit 1
+          fi
+
+      - name: no built-in duplicates
+        run: |
+          for skill in docx pdf pptx xlsx skill-creator; do
+            if [ -d "skills/$skill" ]; then
+              echo "skills/$skill duplicates an OpenCode built-in"; exit 1
+            fi
+          done
