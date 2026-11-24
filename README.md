@@ -53,16 +53,16 @@ OpenCode does not have.
 ## Skills
 
 **Workflow**
-- **`commit`** — one-thing, one-line conventional commits, gated on the project's checks.
+- **`commit`** — one-thing, one-line conventional commits gated on the project's
+  checks, including applying review feedback one item at a time.
 - **`release`** — push, watch CI until green, write release notes.
-- **`new-project`** — start a project from an idea with a reproducible environment.
-- **`apply-review`** — apply a code review one item at a time.
-- **`align-docs`** — keep docs and code in sync.
-- **`write-docs`** — short, plain, purpose-first docs.
-- **`explain-plainly`** — explain anything simply.
 - **`ui-polish`** — make a UI clean and obvious.
 
 **Writing**
+- **`write-docs`** — short, plain, purpose-first docs, plus keeping docs, plans
+  and code aligned.
+- **`explain-plainly`** — explain anything simply, with talking points and a
+  learning path.
 - **`humanize`** — rewrite reports and prose in my academic voice, with an ODT
   workflow that preserves citations and formatting.
 

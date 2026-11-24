@@ -3,8 +3,9 @@ name: write-docs
 description: >-
   Write documentation and copy that is short, plain and purpose-first: READMEs,
   changelogs, plans, PR bodies, release notes, descriptions and page text. Use
-  whenever you write or rewrite docs or copy, or the user asks to "shorten",
-  "simplify", "make it concise" or "use simple sentences".
+  whenever you write or rewrite docs or copy, the user asks to "shorten",
+  "simplify", "make it concise" or "use simple sentences", or docs/plans/code
+  are "inconsistent", "out of sync" or "not aligned".
 ---
 
 # write-docs
@@ -28,6 +29,17 @@ When a finding is really a choice for the owner, write it as:
 - Either way: steps that apply to both
 ```
 
+## Keep docs aligned
+Cross-check every document against the others and against the code. Give each
+fact one home: a plan owns *when*, a guide owns *how*, the README owns
+*commands*. For every number, feature, status and process claim, find what backs
+it: code, a recorded result, a commit, or a command you can rerun. Remove claims
+nothing backs. When one doc changes, re-check every other doc that states the
+same fact.
+
+Back up binary documents (`.odt`, `.docx`) before editing, and use a tool that
+preserves fields and citations instead of retyping them as text.
+
 ## Keep docs DRY
-Each fact lives in one place and other docs link to it. When shortening,
-merge duplicate docs and delete the extras (see the `align-docs` skill).
+Each fact lives in one place and other docs link to it. Merge duplicate docs and
+delete the extras.

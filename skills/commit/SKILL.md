@@ -3,9 +3,10 @@ name: commit
 description: >-
   Commit work as small, single-purpose commits with one-line Conventional Commit
   messages, each gated on the project's own checks. Use whenever you are about to
-  commit, split changes into commits, amend or reorder history, or the user says
-  "commit", "one commit one thing", "logically isolated commits", or
-  "conventional commit".
+  commit, split changes into commits, amend or reorder history, apply review
+  feedback one item at a time, or the user says "commit", "one commit one
+  thing", "logically isolated commits", "apply the review" or "conventional
+  commit".
 ---
 
 # commit
@@ -25,6 +26,20 @@ description: >-
   package scripts, README) and chain them with `&&`, never `;`, so a broken
   commit never lands.
 - **Don't push, tag or merge unless asked.**
+
+## Applying review feedback
+When the user points at a review, feedback file or fix plan:
+
+1. Read it all, number every item, and triage into **apply now**, **defer**,
+   **decide** or **no change**. Record deferred work where the project tracks
+   open work.
+2. Apply one item at a time: fix it, run the project's checks, commit it alone.
+   Never batch items.
+3. If a fix claims an improvement (speed, size, accuracy), measure before and
+   after with the same command and inputs. Keep it only if it improves;
+   otherwise revert and note "tried, no gain".
+4. Report three short lists: applied (with commit hashes), deferred (and where),
+   not applied (and why).
 
 ## Splitting existing changes
 Interactive `git add -p` may be unavailable. Stage part of a file by applying a
