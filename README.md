@@ -26,7 +26,8 @@ cd opencode-setup
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-That's it. The installer links every skill into `~/.config/opencode/skills`. It's safe to re-run, and because it uses links,
+That's it. The installer links every skill into `~/.config/opencode/skills` and
+adds the OpenCode plugins listed below. It's safe to re-run, and because it uses links,
 `git pull` updates the skills in place.
 
 ## What's inside
@@ -40,6 +41,15 @@ That's it. The installer links every skill into `~/.config/opencode/skills`. It'
 - **`ui-polish`** — make a UI clean and obvious.
 - **`release`** — push, watch CI until green, write release notes.
 - **`new-project`** — start a project from an idea.
+- **`humanize`** — rewrite text so it reads like a person wrote it.
+- **`ai-check`** — score text for AI tells and explain each one.
+
+`humanize` and `ai-check` are copied from
+[harshaneel/humanize](https://github.com/harshaneel/humanize) (MIT, © Harshaneel Gokhale).
+
+The installer also adds the [ponytail](https://github.com/DietrichGebert/ponytail)
+OpenCode plugin (`opencode plugin add @dietrichgebert/ponytail`), which keeps
+changes small and adds the `/ponytail` commands.
 
 The agent loads a skill on its own when your request matches that skill's
 description. No extra command needed.

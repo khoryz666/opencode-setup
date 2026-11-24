@@ -48,6 +48,21 @@ for skill_dir in "$REPO_DIR"/skills/*/; do
 done
 info "installed $n skill(s)"
 
+# 2. Install third-party OpenCode plugins (skipped if already present).
+plugins=(@dietrichgebert/ponytail)
+if command -v opencode >/dev/null 2>&1; then
+  installed="$(opencode plugin list 2>/dev/null || true)"
+  for p in "${plugins[@]}"; do
+    if grep -qF -- "$p" <<<"$installed"; then
+      info "plugin already installed: $p"
+    else
+      opencode plugin add "$p" && info "plugin added: $p" || warn "plugin add failed: $p"
+    fi
+  done
+else
+  warn "opencode not on PATH; skipped plugins: ${plugins[*]}"
+fi
+
 echo
 info "Done. Verify with:"
 for c in "$REPO_DIR"/skills/*/scripts/check-cli.sh; do

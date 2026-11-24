@@ -68,5 +68,21 @@ foreach ($skill in (Get-ChildItem -LiteralPath (Join-Path $REPO_DIR 'skills') -D
 }
 Write-Info "installed $n skill(s)"
 
+# 2. Install third-party OpenCode plugins (skipped if already present).
+$plugins = @('@dietrichgebert/ponytail')
+if (Get-Command opencode -ErrorAction SilentlyContinue) {
+    $installed = (& opencode plugin list 2>$null) -join "`n"
+    foreach ($p in $plugins) {
+        if ($installed.Contains($p)) {
+            Write-Info "plugin already installed: $p"
+        } else {
+            & opencode plugin add $p
+            if ($LASTEXITCODE -eq 0) { Write-Info "plugin added: $p" } else { Write-Warn "plugin add failed: $p" }
+        }
+    }
+} else {
+    Write-Warn "opencode not on PATH; skipped plugins: $($plugins -join ' ')"
+}
+
 Write-Host ''
 Write-Info 'Done.'
