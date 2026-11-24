@@ -23,6 +23,9 @@ jobs:
       - name: check layout
         run: |
           test -f opencode.json
+          test -f agents/tutor.md
+          test -f commands/learn.md
+          test -f learned/preferences.md
           for skill in skills/*/; do
             test -f "$skill/SKILL.md" || { echo "missing SKILL.md: $skill"; exit 1; }
           done

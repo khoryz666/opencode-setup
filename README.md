@@ -1,6 +1,6 @@
 # opencode-setup
 
-My global OpenCode configuration: custom skills and the
+My global OpenCode configuration: custom skills, a tutor agent, and the
 [ponytail](https://github.com/DietrichGebert/ponytail) plugin.
 
 The repo root **is** the OpenCode config directory, so cloning it into place is
@@ -13,9 +13,9 @@ mkdir -p ~/.config
 git clone git@github.com:khoryz666/opencode-setup.git ~/.config/opencode
 ```
 
-That's it. OpenCode reads `opencode.json` and `skills/` from
-`~/.config/opencode`. Start OpenCode, or press `/reload` if it is already
-running.
+That's it. OpenCode reads `opencode.json`, `agents/`, `commands/`, `skills/` and
+`learned/` from `~/.config/opencode`. Start OpenCode, or press `/reload` if it is
+already running.
 
 Do **not** clone into `~/.opencode`: that is where the `opencode` binary lives,
 not where OpenCode reads its configuration.
@@ -41,12 +41,18 @@ Credentials are not in git. On a fresh machine, connect a provider once with
 
 | Path | What it is |
 |------|------------|
-| `opencode.json` | Global config. Declares the ponytail plugin. |
+| `opencode.json` | Global config: formatter, snapshots, compaction, permissions, instructions, ponytail. |
+| `agents/tutor.md` | Tutor agent. Explains and reviews, never edits. |
+| `commands/learn.md` | `/learn <task>` — deliberate-practice mode. |
 | `skills/` | Custom skills. One directory per skill, each with a `SKILL.md`. |
+| `learned/preferences.md` | Curated, public-safe preferences loaded into every session. |
 
 OpenCode already ships `docx`, `pdf`, `pptx`, `xlsx`, `skill-creator` and the
 other built-in skills, so this repo does not duplicate them. It only adds what
 OpenCode does not have.
+
+Memory, handoff and self-optimization plugins are intentionally not installed.
+Add them when needed; keep memory private.
 
 ## Skills
 
@@ -60,6 +66,10 @@ OpenCode does not have.
 - **`humanize`** — rewrite reports and prose through a voice profile and an ODT
   workflow that preserves citations and formatting. The profile is provisional.
 
+**Security**
+- **`security-review`** — read-only review of secrets, data exposure, file
+  handling, auth, dependencies and LLM-specific risks.
+
 **Visuals**
 - **`drawio`** — diagrams, flowcharts, architecture, mockups, plus print posters
   and infographics, exported to `.drawio`, PNG, SVG or PDF.
@@ -70,6 +80,35 @@ See `skills/drawio/LICENSE.txt` and `skills/drawio/NOTICE`.
 
 The `humanize` ODT scripts use only the Python standard library. Its voice
 profile is still provisional until it is rebuilt from authentic writing samples.
+
+## Learning by doing: `/learn`
+
+`/learn <task>` switches to the `tutor` agent:
+
+- gives you one small step at a time, not the full solution;
+- waits while you write the code;
+- reviews your diff and asks you to explain what changed;
+- runs only the narrowest check, with approval;
+- **cannot edit files** (`edit` is denied; `shell` asks first).
+
+This is deliberate practice, not a self-optimizing loop. It is version-controlled
+in `commands/learn.md` and `agents/tutor.md`.
+
+## Safe config defaults
+
+`opencode.json` enables:
+
+- built-in formatters (`formatter: true`);
+- snapshots, todos and compaction;
+- update notifications;
+- permission asks for external directories, `.env`, `git push`, `git reset
+  --hard` and `rm -rf`, and a deny for `~/.ssh`;
+- `watcher.ignore` for `.git`, `node_modules`, `target`, `dist`, `build` and
+  `coverage`;
+- `learned/preferences.md` as a global instruction file.
+
+Private state is gitignored: `memory/`, `journal/`, `sessions/`,
+`learned/usage.json`, `.env` and `service.json`.
 
 ## How to use it
 
@@ -83,13 +122,28 @@ Examples:
 - "Check whether the docs and code still agree." → `write-docs`
 - "Humanize this report in my voice." → `humanize`
 - "Rewrite `~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt` in my voice." → `humanize`
+- "Security-review the current diff." → `security-review`
 - "Make an A1 conference poster about the project, portrait, and export a print PDF." → `drawio`
 - "Turn these notes into a one-page infographic." → `drawio`
 - "Draw the auth flow and export it as SVG." → `drawio`
+- "`/learn` implement the login flow" → tutor mode
 
 The ponytail plugin adds the `/ponytail`, `/ponytail-review`, `/ponytail-audit`,
 `/ponytail-debt`, `/ponytail-gain` and `/ponytail-help` commands. It styles every
 coding task, so use `/ponytail off` if you want it out of the way.
+
+## Security review
+
+`security-review` is a read-only review skill. Ask for it before a release, or
+when a change touches parsing, storage, auth, networking, legal or client data.
+
+It checks secrets and PII, data flow, malicious file input, local API exposure,
+dependencies, LLM prompt injection, error/log leakage and data retention. For
+QorFinder it also covers client-file confidentiality, local index and temp
+storage, PDF parsing and model downloads.
+
+Findings are reported as **must fix**, **should fix** and **notes**, with what,
+where, impact, fix and the check that proves it. It does not edit files.
 
 ## drawio, posters and infographics
 

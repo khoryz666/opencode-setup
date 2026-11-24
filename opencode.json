@@ -1,4 +1,67 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["@dietrichgebert/ponytail"]
+  "plugins": ["@dietrichgebert/ponytail"],
+  "formatter": true,
+  "snapshots": true,
+  "experimental": {
+    "todo": true
+  },
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 15000
+    },
+    "buffer": "15%"
+  },
+  "update": "notify",
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "node_modules/**",
+      "target/**",
+      "dist/**",
+      "build/**",
+      "coverage/**"
+    ]
+  },
+  "permissions": [
+    {
+      "action": "external_directory",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.env",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "*.env.*",
+      "effect": "ask"
+    },
+    {
+      "action": "read",
+      "resource": "**/.ssh/**",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git reset --hard *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf *",
+      "effect": "ask"
+    }
+  ],
+  "instructions": [
+    "~/.config/opencode/learned/preferences.md"
+  ]
 }

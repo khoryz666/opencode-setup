@@ -2,3 +2,10 @@ __pycache__/
 *.py[cod]
 service.json
 .DS_Store
+memory/
+journal/
+sessions/
+learned/usage.json
+.env
+.env.*
+!.env.example
