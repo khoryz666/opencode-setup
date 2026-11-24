@@ -63,8 +63,8 @@ OpenCode does not have.
 - **`ui-polish`** — make a UI clean and obvious.
 
 **Writing**
-- **`humanize`** — rewrite text so it reads like a person wrote it.
-- **`ai-check`** — score text for AI tells and explain each one.
+- **`humanize`** — rewrite reports and prose in my academic voice, with an ODT
+  workflow that preserves citations and formatting.
 
 **Delegation**
 - **`parallel-agents`** — fan out cheap coding agents in parallel while you review.
@@ -73,8 +73,9 @@ OpenCode does not have.
 - **`drawio`** — diagrams, flowcharts, architecture, mockups, plus print posters
   and infographics, exported to `.drawio`, PNG, SVG or PDF.
 
-`humanize` and `ai-check` are copied from
-[harshaneel/humanize](https://github.com/harshaneel/humanize) (MIT, © Harshaneel Gokhale).
+`humanize` is distilled from the QorFinder FYP proposal and the Malaysian Economy
+property-development report. The ODT scripts use only the Python standard
+library.
 
 `drawio` is adapted from [jgraph/drawio-mcp](https://github.com/jgraph/drawio-mcp)
 (Apache 2.0, © 2025 JGraph Ltd) for OpenCode, Linux/macOS and Python helpers.
@@ -92,7 +93,8 @@ Examples:
 - "Turn these notes into a one-page infographic." → `drawio`
 - "Draw the auth flow and export it as SVG." → `drawio`
 - "Fan out these three independent tasks to the cheap model." → `parallel-agents`
-- "Rewrite this announcement so it sounds human." → `humanize`
+- "Humanize this report in my voice." → `humanize`
+- "Rewrite `~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt` in my voice." → `humanize`
 
 The ponytail plugin adds the `/ponytail`, `/ponytail-review`, `/ponytail-audit`,
 `/ponytail-debt`, `/ponytail-gain` and `/ponytail-help` commands. It styles every
@@ -127,6 +129,45 @@ Poster/infographic prompts work best with a format, orientation and audience:
 
 > Make an A1 portrait conference poster for engineers. Sections: problem, method,
 > results chart, conclusion, QR. Export a print PDF and keep the `.drawio`.
+
+## Humanizing ODT reports
+
+`humanize` rewrites in the voice distilled from the QorFinder FYP and the
+Malaysian Economy report. It edits the report through a Markdown intermediate so
+paragraph styles, bold/italic spans and citations survive.
+
+```bash
+# 1. Extract to an editable Markdown file
+python3 ~/.config/opencode/skills/humanize/scripts/odt_extract.py \
+  ~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt --out /tmp/fyp.humanize
+
+# 2. Ask the agent to rewrite /tmp/fyp.humanize/23ACB05662_FYP1.md,
+#    or edit it yourself. Rewrite only blocks with rewrite=yes.
+
+# 3. Apply to a new file; the original is untouched
+python3 ~/.config/opencode/skills/humanize/scripts/odt_apply.py \
+  ~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt \
+  /tmp/fyp.humanize/23ACB05662_FYP1.md \
+  /tmp/fyp.humanize/blocks.json \
+  --out ~/Desktop/qorfinder/doc/23ACB05662_FYP1.humanized.odt
+
+# 4. Compare, check citations, optionally render a PDF
+python3 ~/.config/opencode/skills/humanize/scripts/odt_verify.py \
+  ~/Desktop/qorfinder/doc/23ACB05662_FYP1.odt \
+  ~/Desktop/qorfinder/doc/23ACB05662_FYP1.humanized.odt --pdf
+```
+
+The extractor keeps headings and captions as read-only context and leaves
+tables, references, code, metadata and short paragraphs out of the rewrite
+targets. Formatting spans appear as `{{rN}}…{{/rN}}` markers; keep them when
+rewriting. A dropped marker or an edit to a read-only block stops the apply step.
+
+Refresh the voice profile with more of your writing:
+
+```bash
+python3 ~/.config/opencode/skills/humanize/scripts/style_profile.py \
+  report1.odt report2.odt
+```
 
 ## parallel-agents (the big one)
 
@@ -165,8 +206,9 @@ session first, or run `opencode` with an empty config and ask for the skill IDs.
 - OpenCode installed and connected to a provider (`opencode auth login`).
 - `git`, `bash` and `python3`.
 - Optional: draw.io Desktop for Mermaid conversion, layouts and image export.
+- Optional: LibreOffice for `odt_verify.py --pdf` and for opening the results.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The `drawio` skill is Apache 2.0; `humanize` and
-`ai-check` are MIT. Each skill keeps its own license file.
+MIT — see [LICENSE](LICENSE). The `drawio` skill is Apache 2.0; the rest is MIT.
+Each skill keeps its own license file.

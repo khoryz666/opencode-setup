@@ -23,6 +23,7 @@ jobs:
         run: |
           python3 -m compileall -q skills
           python3 skills/drawio/scripts/selftest.py
+          python3 skills/humanize/scripts/selftest.py
 
       - name: check layout
         run: |
