@@ -44,8 +44,16 @@ adds the OpenCode plugins listed below. It's safe to re-run, and because it uses
 - **`humanize`** — rewrite text so it reads like a person wrote it.
 - **`ai-check`** — score text for AI tells and explain each one.
 
+- **`antigravity-protocol`** — terse, plan-first, exact-edit coding mode.
+- **`skill-creator`** — create, test and tune skills (trigger evals run through `opencode run`).
+- **`docx`**, **`pdf`**, **`pptx`**, **`xlsx`** — read, create and edit Office files and PDFs.
+
 `humanize` and `ai-check` are copied from
 [harshaneel/humanize](https://github.com/harshaneel/humanize) (MIT, © Harshaneel Gokhale).
+
+`skill-creator`, `docx`, `pdf`, `pptx` and `xlsx` are adapted from Anthropic's
+skills (Apache 2.0, see each skill's `LICENSE.txt`), modified to drop Claude-only
+instructions and to run on OpenCode.
 
 The installer also adds the [ponytail](https://github.com/DietrichGebert/ponytail)
 OpenCode plugin (`opencode plugin add @dietrichgebert/ponytail`), which keeps
