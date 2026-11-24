@@ -13,8 +13,6 @@ git clone git@github.com:khoryz666/opencode-setup.git ~/.config/opencode
 OpenCode reads `opencode.json`, `cli.json`, `agents/`, `commands/`, `skills/` and
 `learned/` from `~/.config/opencode`. Press `/reload` if it is already running.
 
-Do **not** clone into `~/.opencode`; that is the binary directory.
-
 If `~/.config/opencode` exists, back it up first:
 
 ```bash
@@ -35,8 +33,6 @@ Update with `git -C ~/.config/opencode pull`. Credentials are not in git; run
 | `commands/learn.md` | `/learn <task>` — one step at a time. |
 | `skills/` | Custom skills. |
 | `learned/preferences.md` | Curated preferences loaded every session. |
-
-OpenCode's built-in skills are not duplicated.
 
 ## Skills
 
