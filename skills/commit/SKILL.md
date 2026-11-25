@@ -23,14 +23,15 @@ improvements before and after with the same command; keep only if better. Report
 applied (with hashes), deferred (and where), and rejected (and why).
 
 ## Splitting an existing change
-`git add -p` may be unavailable. Stage only one concern's hunks:
+`git add -p` may be unavailable. Stage one concern's hunks by number:
 
 ```bash
-git diff -U0 file > all.patch       # keep only this commit's hunks in part.patch
-git apply --cached --unidiff-zero part.patch
-git commit -m "fix(x): ..."
+python3 <skill>/scripts/hunks.py [PATH...]            # list hunks, numbered
+python3 <skill>/scripts/hunks.py --stage 2 5 [-- PATH...]
+git diff --cached && git commit -m "fix(x): ..."
 ```
 
-If a hunk mixes concerns, reset and replay one concern at a time.
+Relist after each stage; numbers shift. Untracked files: `git add` whole. If a
+hunk mixes concerns, reset and replay one concern at a time.
 
 Report `git log --oneline`.

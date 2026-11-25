@@ -22,6 +22,7 @@ jobs:
           python3 skills/drawio/scripts/selftest.py
           python3 skills/humanize/scripts/selftest.py
           python3 skills/zotero/scripts/selftest.py
+          python3 skills/commit/scripts/selftest.py
 
       - name: check layout
         run: |
