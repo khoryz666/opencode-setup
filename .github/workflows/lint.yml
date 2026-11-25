@@ -24,6 +24,7 @@ jobs:
           python3 skills/zotero/scripts/selftest.py
           python3 skills/commit/scripts/selftest.py
           python3 skills/write-docs/scripts/selftest.py
+          python3 skills/security-review/scripts/selftest.py
 
       - name: check layout
         run: |

@@ -16,6 +16,10 @@ Read the actual code, not only comments. Trace attacker-controlled input from
 entry to trust boundary to sink. Verify a suspected bug with a test or command
 when possible. Report no speculative finding without a path.
 
+Start with `python3 <skill>/scripts/find_secrets.py` (tracked files) and
+`find_secrets.py history` (every added line, all branches); output is
+redacted. A hit in history needs rotation, not just deletion.
+
 ## Checklist
 - **Secrets and PII:** keys, tokens, `.env`, SSH keys, client names, document
   content in logs, fixtures, commits and error messages.
