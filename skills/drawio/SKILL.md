@@ -22,8 +22,11 @@ size matters.
 ## Pipeline
 1. **Author**
    - Mermaid: `drawio -x -f xml -o diagram.drawio diagram.mmd`; delete `.mmd`.
-   - XML: write `diagram.drawio`; then
-     `python3 <skill>/scripts/repair_drawio.py diagram.drawio`.
+   - XML: write `diagram.drawio`, or generate it with `scripts/diagram.py`
+     (`Diagram(...).box/text/image/line/arrow`, then `.save`; see its
+     docstring); then `python3 <skill>/scripts/repair_drawio.py diagram.drawio`.
+   - Check: `python3 <skill>/scripts/lint_drawio.py diagram.drawio [MIN_FONT]`
+     (ids, dangling edges, off-page cells, text under 24 px on A1+).
 2. **Deliver**
    - default: keep `.drawio`; open it.
    - png/svg/pdf: `drawio -x -f pdf -e -b 10 -o diagram.drawio.pdf diagram.drawio`;
@@ -98,7 +101,7 @@ Build: absolute coordinates; `rounded=0` cards, text cells, image cells;
 `whiteSpace=wrap;html=1;`; explicit align/verticalAlign; group sections; export
 `-e -b 0`; keep the source.
 
-QA: squint test; no overflow/overlap/clipping; consistent margins/type/colors;
+QA: `lint_drawio.py` clean; squint test; no overflow/overlap/clipping; consistent margins/type/colors;
 numbers/units/sources correct; PDF physical size or PNG pixel size correct.
 
 ## Troubleshooting
