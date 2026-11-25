@@ -60,6 +60,9 @@ Scripts use only the Python standard library; `<skill>` is this skill's director
    → `report.md` + `blocks.json`; original untouched.
 2. Rewrite `report.md`: edit only `rewrite=yes` blocks; keep block headers,
    `{{rN}}…{{/rN}}` markers and one paragraph per line; leave `rewrite=no` alone.
+   Check the edits: `python3 <skill>/scripts/tells.py report.humanize/report.md`
+   (AI tells, banned connectives, dashes, first person, sentences over 45
+   words); fix or justify each hit.
 3. Apply:
    `python3 <skill>/scripts/odt_apply.py report.odt report.humanize/report.md report.humanize/blocks.json --out report.humanized.odt`
    The original stays intact; a dropped marker or edited read-only block stops it.
@@ -79,5 +82,5 @@ update this file if the numbers move.
 
 Plain text/Markdown: apply the same voice rules directly.
 
-Files: `odt_extract.py`, `odt_apply.py`, `odt_verify.py`, `style_profile.py`,
-`odt_lib.py`, `selftest.py`.
+Files: `odt_extract.py`, `odt_apply.py`, `odt_verify.py`, `tells.py`,
+`style_profile.py` (owns the tell lists), `odt_lib.py`, `selftest.py`.

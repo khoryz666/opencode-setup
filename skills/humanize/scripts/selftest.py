@@ -10,6 +10,8 @@ import zipfile
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
+from tells import tells
+
 HERE = Path(__file__).resolve().parent
 TEXT_NS = "{urn:oasis:names:tc:opendocument:xmlns:text:1.0}"
 
@@ -93,6 +95,10 @@ def main() -> None:
             "This paragraph explains how the system indexes a folder of legal documents and why that matters to a small firm that searches its own files every day and reviews the result.",
             "The system indexes every legal document in the folder and returns the passage that matches the query, which matters to a small firm that searches its own files every day.",
         ).replace("It keeps", "It preserves")
+        markdown_path.write_text(markdown, encoding="utf-8")
+        assert tells(markdown_path) == []
+        markdown_path.write_text(markdown.replace("It preserves", "Moreover, it preserves"), encoding="utf-8")
+        assert [t.split(": ")[1] for t in tells(markdown_path)] == ["connective “Moreover”"], tells(markdown_path)
         markdown_path.write_text(markdown, encoding="utf-8")
 
         humanized = root / "humanized.odt"
