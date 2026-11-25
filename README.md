@@ -41,6 +41,7 @@ Update with `git -C ~/.config/opencode pull`. Credentials are not in git; run
 - **`humanize`** — rewrite ODT reports; preserve citations and formatting.
 - **`security-review`** — read-only security review before releases.
 - **`drawio`** — diagrams, mockups, posters and infographics.
+- **`zotero`** — audit a Zotero library against a report's citations; write JS for edits.
 
 ## Use
 
