@@ -27,8 +27,11 @@ For a choice for the owner:
 One fact, one home: a plan owns *when*, a guide owns *how*, the README owns
 *commands*. For every number, feature, status and process claim, find its
 backing: code, a recorded result, a commit, or a rerunnable command. Remove
-claims nothing backs. When one doc changes, re-check every doc that repeats the
+claims nothing backs. `python3 <skill>/scripts/facts.py results/ README.md report.odt`
+lists numbers no backing file contains (roundings count). When one doc changes, re-check every doc that repeats the
 fact. Back up `.odt`/`.docx` before editing and preserve fields and citations.
 
 ## Keep docs DRY
 Each fact lives once; other docs link to it. Merge duplicates and delete extras.
+`python3 <skill>/scripts/repeats.py DOC...` finds sentences stated twice
+(.md, .txt, .odt).
