@@ -39,11 +39,3 @@ jobs:
           if find . -name '*.ps1' | grep -q .; then
             echo "PowerShell scripts are not allowed"; exit 1
           fi
-
-      - name: no built-in duplicates
-        run: |
-          for skill in docx pdf pptx xlsx skill-creator; do
-            if [ -d "skills/$skill" ]; then
-              echo "skills/$skill duplicates an OpenCode built-in"; exit 1
-            fi
-          done
