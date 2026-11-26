@@ -39,29 +39,49 @@ files=("$backup"/sessions/*.json)
 shopt -u nullglob
 ((${#files[@]} > 0)) || die "no session files in $backup/sessions"
 
-# Import defaults to the current directory, so look the original one up.
+# Import defaults to the current directory, so look the original one up. Order
+# parents before children: a child cannot be imported before its parent.
+command -v python3 >/dev/null || die "python3 is required"
 map=$(mktemp)
 trap 'rm -f -- "$map"' EXIT
-if [[ -f $backup/manifest.jsonl ]]; then
-  command -v python3 >/dev/null || die "python3 is required"
-  python3 - "$backup/manifest.jsonl" > "$map" <<'PY'
-import json, sys
-for line in open(sys.argv[1]):
-    row = json.loads(line)
-    print(row["id"], row["directory"], sep="\t")
-PY
-fi
+python3 - "$backup" > "$map" <<'PY'
+import json, os, sys
 
-for f in "${files[@]}"; do
-  id=$(basename "$f" .json)
-  dir=$(awk -F '\t' -v id="$id" '$1 == id { print $2; exit }' "$map")
+backup = sys.argv[1]
+sessions = os.path.join(backup, "sessions")
+dirs = {}
+manifest = os.path.join(backup, "manifest.jsonl")
+if os.path.exists(manifest):
+    for line in open(manifest):
+        row = json.loads(line)
+        dirs[row["id"]] = row["directory"]
+
+paths = [os.path.join(sessions, f) for f in os.listdir(sessions) if f.endswith(".json")]
+parents = {}
+for path in paths:
+    info = json.load(open(path))["info"]
+    parents[info["id"]] = info.get("parentID")
+
+def depth(sid):
+    d, seen = 0, set()
+    while parents.get(sid) and sid not in seen:
+        seen.add(sid)
+        sid = parents[sid]
+        d += 1
+    return d
+
+for path in sorted(paths, key=lambda p: depth(os.path.basename(p)[:-5])):
+    print(path, dirs.get(os.path.basename(path)[:-5], ""), sep="\t")
+PY
+
+while IFS=$'\t' read -r f dir; do
   printf 'importing %s\n' "$(basename "$f")"
   if [[ -n $dir && -d $dir ]]; then
     opencode session import "$f" --directory "$dir" || die "import failed: $f (backup kept)"
   else
     opencode session import "$f" || die "import failed: $f (backup kept)"
   fi
-done
+done < "$map"
 
 rm -rf -- "$backup"
 parent=$(dirname -- "$backup")
