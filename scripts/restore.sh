@@ -39,9 +39,28 @@ files=("$backup"/sessions/*.json)
 shopt -u nullglob
 ((${#files[@]} > 0)) || die "no session files in $backup/sessions"
 
+# Import defaults to the current directory, so look the original one up.
+map=$(mktemp)
+trap 'rm -f -- "$map"' EXIT
+if [[ -f $backup/manifest.jsonl ]]; then
+  command -v python3 >/dev/null || die "python3 is required"
+  python3 - "$backup/manifest.jsonl" > "$map" <<'PY'
+import json, sys
+for line in open(sys.argv[1]):
+    row = json.loads(line)
+    print(row["id"], row["directory"], sep="\t")
+PY
+fi
+
 for f in "${files[@]}"; do
+  id=$(basename "$f" .json)
+  dir=$(awk -F '\t' -v id="$id" '$1 == id { print $2; exit }' "$map")
   printf 'importing %s\n' "$(basename "$f")"
-  opencode session import "$f" || die "import failed: $f (backup kept)"
+  if [[ -n $dir && -d $dir ]]; then
+    opencode session import "$f" --directory "$dir" || die "import failed: $f (backup kept)"
+  else
+    opencode session import "$f" || die "import failed: $f (backup kept)"
+  fi
 done
 
 rm -rf -- "$backup"

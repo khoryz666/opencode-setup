@@ -93,8 +93,9 @@ Restore after logging in:
 ~/.config/opencode/scripts/restore.sh ~/opencode-session-backup/<timestamp>
 ```
 
-`restore.sh` imports every session, then deletes the backup directory and the
-empty parent. If any import fails, it keeps the backup and exits non-zero.
+`restore.sh` imports every session into its original project directory when that
+directory still exists, then deletes the backup directory and the empty parent.
+If any import fails, it keeps the backup and exits non-zero.
 
 ## Add a skill
 
