@@ -38,6 +38,7 @@ skills (`opencode`, `report`, `browser`); ponytail is fetched from npm;
 | `skills/` | Custom and vendored skills. |
 | `learned/preferences.md` | Curated preferences loaded every session. |
 | `scripts/reset.sh` | Export sessions, wipe local state, reinstall and re-clone. |
+| `scripts/restore.sh` | Import a session backup, then delete it. |
 | `THIRD_PARTY.md` | Vendored skill sources and licences. |
 
 ## Skills
@@ -89,10 +90,11 @@ terminal, not from inside OpenCode.
 Restore after logging in:
 
 ```bash
-for f in ~/opencode-session-backup/<timestamp>/sessions/*.json; do
-  opencode session import "$f"
-done
+~/.config/opencode/scripts/restore.sh ~/opencode-session-backup/<timestamp>
 ```
+
+`restore.sh` imports every session, then deletes the backup directory and the
+empty parent. If any import fails, it keeps the backup and exits non-zero.
 
 ## Add a skill
 

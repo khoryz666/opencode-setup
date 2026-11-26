@@ -138,10 +138,9 @@ Full exports, including transcripts. Treat this directory as private (mode 700).
 
 Restore after reinstalling and logging in:
 
-    for f in "$out"/sessions/*.json; do
-      opencode session import "\$f"
-    done
+    ~/.config/opencode/scripts/restore.sh "$out"
 
+The restore script deletes this backup after every import succeeds.
 Metadata is in \`manifest.jsonl\`.
 EOF
 
@@ -177,6 +176,6 @@ Next:
   opencode
   /connect        (log in to your provider)
 
-Restore history:
-  for f in "$out"/sessions/*.json; do opencode session import "\$f"; done
+Restore history (deletes the backup after import):
+  ~/.config/opencode/scripts/restore.sh "$out"
 EOF
