@@ -12,7 +12,9 @@ Vendored so a fresh install needs nothing outside this repository.
 
 Vendored 2026-11-26 from
 [`anthropics/skills@e4bb5d9`](https://github.com/anthropics/skills/tree/e4bb5d960d87126ff3b3a8af1a104b7db67560ba)
-(upstream `main`). Files are unmodified; each skill keeps its own `LICENSE.txt`.
+(upstream `main`). Each skill keeps its own `LICENSE.txt`. Files are adapted
+for OpenCode where upstream referred to Claude-only tools; see the repository
+history for the exact changes.
 Runtime packages (`docx`, `pptxgenjs`, `openpyxl`, `pypdf`, LibreOffice) are not
 vendored and are installed on demand by the skills.
 

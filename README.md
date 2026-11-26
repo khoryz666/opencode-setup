@@ -50,7 +50,7 @@ skills (`opencode`, `report`, `browser`); ponytail is fetched from npm;
 - **`drawio`** — diagrams, mockups, posters and infographics.
 - **`zotero`** — audit a Zotero library against a report's citations; write JS for edits.
 
-Vendored from Anthropic's Apache-2.0 skills, unmodified; see `THIRD_PARTY.md`.
+Vendored from Anthropic's Apache-2.0 skills, adapted for OpenCode; see `THIRD_PARTY.md`.
 
 - **`docx`** — create, read, edit and template Word documents.
 - **`pdf`** — extract, merge, split, watermark, fill and OCR PDFs.
