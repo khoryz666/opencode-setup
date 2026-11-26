@@ -51,6 +51,9 @@ repo_remote=$(git -C "$REPO" remote get-url origin 2>/dev/null || true)
 [[ $repo_remote == *khoryz666/opencode-setup* ]] || die "origin is not $REMOTE"
 [[ -z ${OPENCODE_SESSION_ID:-} || $DRY_RUN == 1 ]] ||
   die "run this from a normal terminal, not from inside OpenCode"
+if ((DRY_RUN == 0)) && pgrep -x opencode -a | grep -v 'serve --service' | grep -q .; then
+  die "close the OpenCode TUI before running this"
+fi
 
 command -v git >/dev/null || die "git is required"
 command -v python3 >/dev/null || die "python3 is required"
@@ -154,7 +157,7 @@ rm -rf -- "$HOME/.opencode" \
           "$HOME/.local/state/opencode" \
           "$HOME/.cache/opencode" \
           "$HOME/.config/opencode"
-rm -rf -- /tmp/opencode /tmp/opencode-pty-*
+rm -rf -- /tmp/opencode "/tmp/opencode-pty-$(id -u)"
 
 printf 'installing OpenCode...\n'
 curl -fsSL https://opencode.ai/v2/install | bash
