@@ -23,6 +23,10 @@ git clone git@github.com:khoryz666/opencode-setup.git ~/.config/opencode
 Update with `git -C ~/.config/opencode pull`. Credentials are not in git; run
 `opencode auth login` once.
 
+A fresh install needs nothing outside this repo. OpenCode supplies its own
+skills (`opencode`, `report`, `browser`); ponytail is fetched from npm;
+`~/.claude` and `~/.agents` are not needed.
+
 ## Contents
 
 | Path | What |
@@ -31,8 +35,9 @@ Update with `git -C ~/.config/opencode pull`. Credentials are not in git; run
 | `cli.json` | Terminal theme: GitHub. |
 | `agents/tutor.md` | Tutor agent: explains and reviews, never edits. |
 | `commands/learn.md` | `/learn <task>` — one step at a time. |
-| `skills/` | Custom skills. |
+| `skills/` | Custom and vendored skills. |
 | `learned/preferences.md` | Curated preferences loaded every session. |
+| `THIRD_PARTY.md` | Vendored skill sources and licences. |
 
 ## Skills
 
@@ -42,6 +47,14 @@ Update with `git -C ~/.config/opencode pull`. Credentials are not in git; run
 - **`security-review`** — read-only security review before releases.
 - **`drawio`** — diagrams, mockups, posters and infographics.
 - **`zotero`** — audit a Zotero library against a report's citations; write JS for edits.
+
+Vendored from Anthropic's Apache-2.0 skills, unmodified; see `THIRD_PARTY.md`.
+
+- **`docx`** — create, read, edit and template Word documents.
+- **`pdf`** — extract, merge, split, watermark, fill and OCR PDFs.
+- **`pptx`** — create, read, edit and template PowerPoint decks.
+- **`xlsx`** — create, read, edit and recalculate spreadsheets.
+- **`skill-creator`** — draft, evaluate and improve skills.
 
 ## Use
 
@@ -65,9 +78,11 @@ OpenCode built-in.
 
 ## Prerequisites
 
-Linux or macOS, OpenCode with a connected provider, `git` and `python3`.
-Optional: draw.io Desktop for exports; LibreOffice for PDF checks.
+Linux or macOS, OpenCode with a connected provider, `git`, `python3` and Node.js
+(npm). Document skills install their Python/npm packages on demand.
+Optional: draw.io Desktop for exports; LibreOffice for PDF and spreadsheet checks.
 
 ## License
 
-MIT. The `drawio` skill is Apache 2.0; see `skills/drawio/LICENSE.txt`.
+MIT. The `drawio`, `docx`, `pdf`, `pptx`, `xlsx` and `skill-creator` skills are
+Apache 2.0; see each skill's `LICENSE.txt` and `THIRD_PARTY.md`.
