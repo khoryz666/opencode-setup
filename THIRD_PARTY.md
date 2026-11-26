@@ -4,13 +4,15 @@ Vendored so a fresh install needs nothing outside this repository.
 
 | Skill | Source | Licence |
 |-------|--------|---------|
-| `docx` | Anthropic skills, synced Claude Code copy | Apache-2.0, `skills/docx/LICENSE.txt` |
-| `pdf` | Anthropic skills, synced Claude Code copy | Apache-2.0, `skills/pdf/LICENSE.txt` |
-| `pptx` | Anthropic skills, synced Claude Code copy | Apache-2.0, `skills/pptx/LICENSE.txt` |
-| `xlsx` | Anthropic skills, synced Claude Code copy | Apache-2.0, `skills/xlsx/LICENSE.txt` |
-| `skill-creator` | Anthropic skills, synced Claude Code copy | Apache-2.0, `skills/skill-creator/LICENSE.txt` |
+| `docx` | Anthropic upstream | Apache-2.0, `skills/docx/LICENSE.txt` |
+| `pdf` | Anthropic upstream | Apache-2.0, `skills/pdf/LICENSE.txt` |
+| `pptx` | Anthropic upstream | Apache-2.0, `skills/pptx/LICENSE.txt` |
+| `xlsx` | Anthropic upstream | Apache-2.0, `skills/xlsx/LICENSE.txt` |
+| `skill-creator` | Anthropic upstream | Apache-2.0, `skills/skill-creator/LICENSE.txt` |
 
-Vendored 2026-11-26. Files are unmodified; each skill keeps its own `LICENSE.txt`.
+Vendored 2026-11-26 from
+[`anthropics/skills@e4bb5d9`](https://github.com/anthropics/skills/tree/e4bb5d960d87126ff3b3a8af1a104b7db67560ba)
+(upstream `main`). Files are unmodified; each skill keeps its own `LICENSE.txt`.
 Runtime packages (`docx`, `pptxgenjs`, `openpyxl`, `pypdf`, LibreOffice) are not
 vendored and are installed on demand by the skills.
 

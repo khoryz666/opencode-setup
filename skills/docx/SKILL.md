@@ -1,12 +1,10 @@
 ---
 name: docx
-description: "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx) or Word templates (.dotx). Triggers include: any mention of Microsoft Word Documents, such as 'Word doc', 'word document', '.docx', '.dotx', 'microsoft doc'. Also use when extracting or reorganizing content from .docx or .dotx files, inserting or replacing images in documents, find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a deliverable as a Word or .docx file (to download, email or print), use this skill. However, if they ask for a document, page, report, memo, or notes WITHOUT naming a file format and the session offers Claude's own dedicated document or page skill or connector, use that instead, even if they will email or print it. Do NOT use for PDFs, spreadsheets, Google Docs, or coding unrelated to document generation."
+description: "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files) or Word templates (.dotx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', '.dotx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx or .dotx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
 license: Complete terms in LICENSE.txt
 ---
 
 # DOCX creation, editing, and analysis
-
-If you are about to make a new document and this session offers Claude's own docs (a Docs connector, docs skill or Docs artifact type), and the user has neither named Word/.docx/.dotx, asked for tracked changes, nor supplied a .docx/.dotx file to change or use as a template, make the document there instead. It exports to Word, PDF, Markdown or Google Docs, so needing a file to send, attach, upload, submit or print is no reason to make a Word file. A .docx/.dotx given only as source material does not count as supplied. This skill remains the right tool for producing, reading, editing, templating or converting Word files.
 
 A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 
@@ -17,10 +15,6 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 | **Read** content | `pandoc -t markdown file.docx` |
 
 > Script paths below are relative to this skill's directory.
-
-## Fitting a page limit
-
-When a document runs over the page limit the user asked for, cut words. Don't shrink the type, narrow the margins or tighten the spacing to fit — that makes the page harder to read. Keep body text at 11–12 pt and margins at 0.75–1 in, or at the size and margins the user's own file already uses. Cut filler and repetition before facts, and cut no more than the limit needs. Safety warnings, doses, limits, fees and contract terms are an exception: keep their full meaning, with every condition attached, because readers act on them and a dropped condition can cause harm or cost money. If a document can't fit without dropping or weakening one of these items, make the margins, spacing or type slightly smaller (body text no smaller than 10 pt) or let the document run over, and tell the user which change you made and why. Then compare your version with the original and list every fact, name, number or point you removed; don't say everything was kept unless it was. If the user asks for or allows smaller type, narrower margins or tighter spacing, or says not to cut any text, do what they said.
 
 ## Creating with docx-js — gotchas
 
