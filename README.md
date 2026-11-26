@@ -37,6 +37,7 @@ skills (`opencode`, `report`, `browser`); ponytail is fetched from npm;
 | `commands/learn.md` | `/learn <task>` — one step at a time. |
 | `skills/` | Custom and vendored skills. |
 | `learned/preferences.md` | Curated preferences loaded every session. |
+| `scripts/reset.sh` | Export sessions, wipe local state, reinstall and re-clone. |
 | `THIRD_PARTY.md` | Vendored skill sources and licences. |
 
 ## Skills
@@ -70,6 +71,28 @@ Ponytail adds `/ponytail`, `/ponytail-review`, `/ponytail-audit`,
 `/ponytail-debt`, `/ponytail-gain` and `/ponytail-help`.
 
 Each skill's `SKILL.md` has the detailed workflow.
+
+## Reset
+
+`scripts/reset.sh` exports every session to
+`~/opencode-session-backup/<timestamp>/` (full transcripts, mode 700), then
+removes the binary, data, state, cache, temp files and local config, reinstalls
+OpenCode and clones this repo back.
+
+It refuses to run with uncommitted or unpushed config. Run it from a normal
+terminal, not from inside OpenCode.
+
+- `--dry-run` — print the plan, change nothing.
+- `--out DIR` — choose the backup directory.
+- `--force` — wipe even if some sessions fail to export.
+
+Restore after logging in:
+
+```bash
+for f in ~/opencode-session-backup/<timestamp>/sessions/*.json; do
+  opencode session import "$f"
+done
+```
 
 ## Add a skill
 
